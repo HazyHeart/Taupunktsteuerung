@@ -1,0 +1,140 @@
+# Taupunktregler - Projektplan V4
+
+## 1. Systemarchitektur
+
+### 1.1 Kritische Komponenten
+- Display (SH1106) - Primäre Benutzeroberfläche
+- BME280 Sensoren (innen/außen) - Kernfunktionalität
+- Relais - Lüftersteuerung
+- Encoder - Benutzerinteraktion
+
+### 1.2 Optionale Komponenten
+- SD-Karte - Datenspeicherung/Logging
+- RTC - Zeitstempel
+- Buzzer - Akustisches Feedback
+
+### 1.3 Boot-Sequenz (Erweitert)
+
+#### Pre-Boot Phase
+- Watchdog Timer Initialisierung (Systemschutz)
+- Grundlegende Systemprüfung
+  - CPU/Flash Test
+  - Spannungsüberprüfung
+  - Recovery-Mode Check (Hardware-Taster)
+
+#### Kritische Hardware (Phase 1)
+- Display-Initialisierung für Boot-Feedback
+- Buzzer für akustische Signale
+- Flash/EEPROM für Konfigurationszugriff
+
+#### Konfiguration (Phase 2)
+- Laden der Grundeinstellungen
+- Validierung der Konfiguration
+- Fallback auf sichere Defaults
+- Speichern der Boot-Historie
+
+#### Peripherie (Phase 3)
+- RTC mit Zeitsynchronisation
+- SD-Karte und Dateisystem
+- Encoder für Benutzereingaben
+- Relais-Testzyklus & Validierung
+
+#### Sensorsystem (Phase 4)
+- BME280 Initialisierung (innen/außen)
+- Sensor-Kalibrierungscheck
+- Erste Messreihe & Plausibilitätsprüfung
+- Sensorstatusvalidierung
+
+#### Systemfinalisierung (Phase 5)
+- Ressourcencheck (RAM, etc.)
+- Start der Monitoring-Dienste
+- Aktivierung der Regelungslogik
+- Übergang in den Normalbetrieb
+
+## 2. Benutzeroberfläche
+
+### 2.1 Hauptscreens (Auto-Rotation)
+1. Messwerte-Screen
+   - Innen/Außen Temperatur
+   - Innen/Außen Luftfeuchte
+   - Trend-Anzeige
+2. Analyse-Screen
+   - Taupunkte Innen/Außen
+   - Absolute Feuchte
+   - Differenzwerte
+3. Status-Screen
+   - Lüfterstatus mit Runtime
+   - Detaillierte Begründung
+   - Aktuelle Betriebsparameter
+
+### 2.2 Systemscreens
+- Boot-Screen mit Logo und Fortschritt
+- Fehler-Screen mit Warnsymbol
+- Warnungs-Screen mit Warnsymbol
+- Status-Event-Screen für Zustandsänderungen
+
+### 2.3 Interaktionsverhalten
+- Encoder-Drehung: Screen-Wechsel/Navigation
+- Kurzer Druck: Auswahl/Bestätigung
+- Langer Druck: Zurück/Schnellzugriff
+- Auto-Timeout nach 30 Sekunden
+- Event-basierte Timeouts (3-5s)
+
+## 3. Steuerungslogik
+
+[vorherige Steuerungslogik-Sektion bleibt unverändert]
+
+## TODO / Notizen
+
+### Hochprioritäre Punkte
+
+#### 1. Steuerungslogik
+- [x] Überarbeitung der Betriebszustände
+- [x] Feinabstimmung der Schwellwerte
+- [ ] Praxisnahe Szenarien durchspielen
+- [ ] Ergänzende Steuerungsparameter
+- [x] Sicherheitsmechanismen
+
+#### 2. Boot-Sequenz
+- [x] Exakte Reihenfolge der Hardware-Initialisierung
+- [x] Fehlerbehandlungsstrategien
+- [x] Fortschrittsberechnung
+- [x] Recovery-Optionen
+- [x] Watchdog-Integration
+
+#### 3. Benutzeroberfläche
+- [x] Finales Screen-Layout
+- [x] Menüstruktur im Detail
+- [x] Encoder-Interaktionslogik
+- [x] Timeout-Verhalten
+- [ ] Implementierung der UI-Komponenten
+
+### Mittlere Priorität
+
+#### 4. Datenspeicherung
+- [ ] Logging-Struktur definieren
+- [ ] Dateiformat für Konfiguration
+- [ ] Backup-Strategie
+- [ ] Speichermanagement
+
+#### 5. Mehrsprachigkeit
+- [ ] String-Ressourcen System
+- [ ] Übersetzungsworkflow
+- [ ] Regionale Anpassungen
+- [ ] Formatierungsstandards
+
+#### 6. Statistik & Analyse
+- [ ] Relevante Metriken definieren
+- [ ] Berechnungsmethoden
+- [ ] Visualisierungsoptionen
+- [ ] Langzeitauswertung
+
+### Zukunftsplanung
+
+[vorherige Zukunftsplanungs-Sektion bleibt unverändert]
+
+## Änderungshistorie:
+- V1: Initiale Version
+- V2: Überarbeitung Steuerungslogik, Hinzufügung der übergeordneten Sicherheitslogik
+- V3: Umfassende Überarbeitung der Boot-Sequenz mit Watchdog Timer
+- V4: Detaillierte UI-Spezifikation hinzugefügt, Screen-Layouts finalisiert, Interaktionskonzept definiert

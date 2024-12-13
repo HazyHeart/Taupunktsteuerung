@@ -1,0 +1,64 @@
+# Taupunktregler - Entwicklungs-Roadmap
+
+## Version 1.1 - Datenspeicherung
+- SD-Karten Integration
+- Logging-Struktur für Messwerte
+- Ereignis-Protokollierung
+- Konfigurationsspeicherung
+- Backup-Strategie
+- Speichermanagement
+
+## Version 1.2 - Erweiterte Analyse
+- Statistik & Analyse Module
+- Relevante Metriken
+- Berechnungsmethoden
+- Visualisierungsoptionen
+- Langzeitauswertung
+- Effizienzanalyse
+
+## Version 2.0 - Konnektivität
+- RTC Integration
+- WLAN-Modul
+- Grundlegende Web-API
+- Einfaches Webinterface
+- Basis-Sicherheitskonzept
+- Remote-Konfiguration
+
+## Version 2.1 - Erweitertes Webinterface
+- Responsive Design
+- Erweiterte API
+- Grafische Auswertungen
+- Remote-Monitoring
+- Push-Benachrichtigungen
+- Mehrbenutzer-Support
+
+## Version 2.2 - Mehrsprachigkeit
+- String-Ressourcen System
+- Übersetzungsworkflow
+- Regionale Anpassungen
+- Formatierungsstandards
+- Web-UI Lokalisierung
+
+## Version 3.0 - Erweiterte Funktionen
+- Wetterdaten-Integration
+- GPS-Modul (optional)
+- Machine Learning für Vorhersagen
+- Automatische Optimierung
+- Erweiterte Sensorik
+- Energiemanagement
+
+## Zukünftige Konzepte
+- Cloud-Integration
+- Mobile App
+- Smart Home Integration
+- KI-gestützte Regelung
+- Alternative Hardwareversionen
+- Professionelle Varianten
+
+## Kontinuierliche Verbesserungen
+- Hardware-Optimierungen
+- Sensor-Kalibrierung
+- Energieverbrauch
+- Zusätzliche Sensoren
+- Alternative Komponenten
+- Performance-Optimierungen

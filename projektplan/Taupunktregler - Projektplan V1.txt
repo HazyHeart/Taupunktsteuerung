@@ -1,0 +1,130 @@
+# Taupunktregler - Projektplan Version 1.0
+
+## 1. Systemarchitektur
+
+### 1.1 Kritische Komponenten
+- Display (SH1106) - Primäre Benutzeroberfläche
+- BME280 Sensoren (innen/außen) - Kernfunktionalität
+- Relais - Lüftersteuerung
+- Encoder - Benutzerinteraktion
+
+### 1.2 Optionale Komponenten (Version 1.0)
+- Buzzer - Akustisches Feedback
+
+## 2. Boot-Sequenz
+
+### 2.1 Pre-Boot Phase
+- Watchdog Timer Initialisierung
+- Grundlegende Systemprüfung
+  - CPU/Flash Test
+  - Spannungsüberprüfung
+  - Recovery-Mode Check
+
+### 2.2 Kritische Hardware (Phase 1)
+- Display-Initialisierung für Boot-Feedback
+- Buzzer für akustische Signale
+- Flash/EEPROM für Konfigurationszugriff
+
+### 2.3 Konfiguration (Phase 2)
+- Laden der Grundeinstellungen
+- Validierung der Konfiguration
+- Fallback auf sichere Defaults
+
+### 2.4 Peripherie (Phase 3)
+- Encoder für Benutzereingaben
+- Relais-Testzyklus & Validierung
+
+### 2.5 Sensorsystem (Phase 4)
+- BME280 Initialisierung (innen/außen)
+- Sensor-Kalibrierungscheck
+- Erste Messreihe & Plausibilitätsprüfung
+- Sensorstatusvalidierung
+
+### 2.6 Systemfinalisierung (Phase 5)
+- Ressourcencheck (RAM, etc.)
+- Start der Monitoring-Dienste
+- Aktivierung der Regelungslogik
+- Übergang in den Normalbetrieb
+
+## 3. Steuerungslogik
+
+### 3.1 Übergeordnete Sicherheitslogik
+```
+Basis-Sicherheitsprüfungen (IMMER):
+├── Frostschutz (Temp > 5°C)
+├── Taupunkt-Differenz positiv
+├── Außentemp < 35°C
+└── Sensoren funktionsfähig
+```
+
+### 3.2 Betriebsmodi und Prioritäten
+
+#### 3.2.1 Schimmelprävention (Kritischer Modus)
+```
+Aktivierungsbedingungen:
+├── Primär: Relative Luftfeuchtigkeit innen > 70%
+└── Hysterese: 5% (Ausschaltpunkt bei 65%)
+
+Sicherheit:
+├── Minimale Laufzeit: 10 Minuten
+├── Maximale Laufzeit: 60 Minuten
+└── Mindestpause: 5 Minuten
+
+Feedback:
+├── Display-Warnung
+├── Buzzer-Alarm (optional)
+└── Status-LED
+```
+
+#### 3.2.2 Feuchteoptimierung (Basismodus)
+- Aktivierung bei moderaten Feuchtigkeitswerten
+- Taupunktdifferenz > 2.0°C
+- Energieeffizienter Betrieb
+
+## 4. Benutzeroberfläche
+
+### 4.1 Hauptscreens (Auto-Rotation)
+1. Messwerte-Screen
+   - Innen/Außen Temperatur
+   - Innen/Außen Luftfeuchte
+   - Trend-Anzeige
+
+2. Analyse-Screen
+   - Taupunkte Innen/Außen
+   - Absolute Feuchte
+   - Differenzwerte
+
+3. Status-Screen
+   - Lüfterstatus mit Runtime
+   - Detaillierte Begründung
+   - Aktuelle Betriebsparameter
+
+### 4.2 Systemscreens
+- Boot-Screen mit Logo und Fortschritt
+- Fehler-Screen mit Warnsymbol
+- Warnungs-Screen mit Warnsymbol
+- Status-Event-Screen
+
+### 4.3 Interaktionsverhalten
+- Encoder-Drehung: Screen-Wechsel/Navigation
+- Kurzer Druck: Auswahl/Bestätigung
+- Langer Druck: Zurück/Schnellzugriff
+- Auto-Timeout nach 30 Sekunden
+- Event-basierte Timeouts (3-5s)
+
+## 5. Grundeinstellungen
+
+### 5.1 Betriebsparameter
+- Taupunkt-Differenz Schwelle: 2.0°C
+- Maximale Luftfeuchtigkeit: 70%
+- Minimale Laufzeit: 10 Minuten
+- Maximale Laufzeit: 60 Minuten
+- Display-Timeout: 30 Sekunden
+- Screen-Rotation: 20 Sekunden
+
+### 5.2 Hardware-Konfiguration
+- Display: SH1106 I2C
+- Sensoren: BME280 (2x)
+- Encoder: 3-Pin (CLK, DT, SW)
+- Relais: 2-Kanal Modul
+- Buzzer: Aktiv

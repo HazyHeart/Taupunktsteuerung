@@ -1,0 +1,223 @@
+# Taupunktregler - Projektplan V2
+
+## 1. Systemarchitektur
+
+### 1.1 Kritische Komponenten
+- Display (SH1106) - Primäre Benutzeroberfläche
+- BME280 Sensoren (innen/außen) - Kernfunktionalität
+- Relais - Lüftersteuerung
+- Encoder - Benutzerinteraktion
+
+### 1.2 Optionale Komponenten
+- SD-Karte - Datenspeicherung/Logging
+- RTC - Zeitstempel
+- Buzzer - Akustisches Feedback
+
+### 1.3 Boot-Sequenz
+1. Display initialisieren
+2. Bootscreen mit Fortschrittsbalken
+3. Hardware-Test Sequenz:
+   - Kritische Komponenten
+   - Optionale Komponenten
+4. Bei kritischem Fehler:
+   - Deutliche Fehleranzeige
+   - Neustart-Option
+   - Fehlerspeicherung
+
+## 2. Benutzeroberfläche
+
+### 2.1 Hauptscreens (Auto-Rotation)
+1. Temperatur & relative Luftfeuchte
+   - Innen/Außen Vergleich
+   - Große, gut lesbare Werte
+2. Taupunkte & absolute Luftfeuchte
+   - Innen/Außen Vergleich
+   - Berechnete Werte
+3. Statusscreen
+   - Lüfterstatus
+   - Begründung für aktuellen Status
+   - Simple Effizienzanzeige (Trend)
+
+### 2.2 Benutzerinteraktion
+- Encoder-Drehung unterbricht Auto-Rotation
+- Manueller Screen-Wechsel durch Drehen
+- Timeout für Rückkehr zur Auto-Rotation
+- Menü-Zugang durch Drücken
+
+### 2.3 Menüstruktur
+- Einstellungen
+  - Display-Timeout
+  - Helligkeit
+  - Sound Ein/Aus
+- Lüftersteuerung
+  - Auto/Manuell
+  - Zeitpläne
+  - Grenzwerte
+- System
+  - Status
+  - Statistiken
+  - SD-Karte
+  - RTC
+
+## 3. Datenspeicherung & Logging
+
+### 3.1 SD-Karte (Vorbereitung für Webinterface)
+- Messwerte in CSV-Format
+- Ereignis-Logging
+- Konfigurationsspeicherung
+- Fehlerprotokoll
+
+### 3.2 Logging-Intervalle
+- Messwerte: alle 5 Minuten
+- Ereignisse: sofort
+- Tägliche Logrotation
+- Automatische Bereinigung
+
+## 4. Modularität & Erweiterbarkeit
+
+### 4.1 Kernmodule
+- SystemCore - Zentrale Steuerung
+- HardwareManager - Geräteabstraktion
+- DisplayManager - UI-Verwaltung
+- DataManager - Datenhaltung
+- StateManager - Zustandsverwaltung
+
+### 4.2 Erweiterungsmodule (Zukunft)
+- WebInterface
+- StatisticsEngine
+- AdvancedControl
+- NetworkManager
+
+## 5. Entwicklungsphasen
+
+### Phase 1: Grundsystem
+- Boot-Sequenz
+- Hardware-Initialisierung
+- Basis-UI
+
+### Phase 2: Kernfunktionalität
+- Sensordaten-Verarbeitung
+- Lüftersteuerung
+- Benutzerinteraktion
+
+### Phase 3: Datenspeicherung
+- Logging-System
+- Konfigurationsverwaltung
+- Fehlerprotokollierung
+
+### Phase 4: Erweiterungen
+- Web-Interface
+- Statistik-Funktionen
+- Netzwerkanbindung
+
+## 6. Steuerungslogik
+
+### 6.1 Übergeordnete Sicherheitslogik
+```
+Basis-Sicherheitsprüfungen (IMMER):
+Diese Checks laufen vor allen Modi:
+├── Frostschutz (Temp > 5°C)
+├── Taupunkt-Differenz positiv
+├── Außentemp < 35°C
+└── Sensoren funktionsfähig
+```
+
+### 6.2 Betriebsmodi und Prioritäten
+
+#### 1. Schimmelprävention (Kritischer Modus)
+```
+Aktivierungsbedingungen:
+├── Primär: Relative Luftfeuchtigkeit innen > 70% (Einschaltpunkt)
+└── Hysterese: 5% (Ausschaltpunkt bei 65%)
+
+Zusätzliche Sicherheit:
+├── Minimale Laufzeit: 10 Minuten
+├── Maximale Laufzeit: 60 Minuten
+└── Mindestpause: 5 Minuten
+
+Benutzer-Feedback:
+├── Display-Warnung
+├── Optionaler Buzzer-Alarm
+└── Status-LED (wenn vorhanden) rot
+```
+
+#### 2. Feuchteoptimierung
+- Status: In Planung
+- Wird aktiviert bei moderaten Feuchtigkeitswerten
+- Arbeitet mit modusabhängigen Taupunktdifferenzen
+
+#### 3. Wartungslüftung
+- Status: In Planung
+- Zeitbasierte Mindestlüftung
+- Sichert Grundlüftung wenn keine anderen Modi aktiv
+
+### 6.3 Geplante Erweiterungen
+- Spezialmodi (Weinkeller, Musikzimmer etc.)
+- Befeuchtungsmodus
+- Anwendungsprofile
+- Dynamische Hysterese (basierend auf Erfahrungswerten)
+
+### 6.4 Display-Menü (Essential Settings)
+#### Basis-Einstellungen
+- Grenzwert relative Luftfeuchte
+- Min/Max Laufzeit
+- Display-Helligkeit
+- Buzzer Ein/Aus
+
+### 6.5 Effizienzmessung (Phase 1)
+- Simple Trendanalyse
+  - Feuchteänderung über Zeit
+  - Laufzeit vs. Erfolg
+- Basis-Statistiken
+  - Tägliche Laufzeit
+  - Durchschnittliche Entfeuchtungsrate
+
+## 7. Lokalisierung & Internationalisierung
+
+### 7.1 Sprachunterstützung
+#### Phase 1
+- Deutsch als Primärsprache
+- Texte in separaten Sprachdateien
+- String-System für einfache Erweiterbarkeit
+
+### 7.2 Regionale Anpassungen
+- Temperatur: °C
+- Luftfeuchte: %
+- Zeit: 24h Format
+- Dezimaltrennzeichen: , (DE)
+- Datumsformat: DD.MM.YYYY
+- Zeitformat: HH:MM:SS
+
+## 8. Qualitätssicherung
+
+### 8.1 Testing
+- Testszenarien definieren
+- Automatisierte Tests
+- Hardware-Tests
+- Langzeittests
+
+### 8.2 Dokumentation
+- Benutzerhandbuch
+- Technische Dokumentation
+- Installationsanleitung
+- Wartungshandbuch
+
+## 9. Entwicklungsprozess
+
+### 9.1 Code-Organisation
+- Modulare Struktur
+- Namenskonventionen
+- Error Handling
+- Performance-Optimierung
+
+### 9.2 Build-System
+- Konfigurationsmanagement
+- Versionierung
+- Release-Prozess
+- Update-Mechanismus
+
+---
+
+Änderungshistorie:
+- V1: Initiale Version
+- V2: Überarbeitung Steuerungslogik, Hinzufügung der übergeordneten Sicherheitslogik und detaillierte Ausarbeitung des Schimmelprävention-Modus

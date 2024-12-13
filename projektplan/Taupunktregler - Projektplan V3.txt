@@ -1,0 +1,194 @@
+# Taupunktregler - Projektplan V3
+
+## 1. Systemarchitektur
+
+### 1.1 Kritische Komponenten
+- Display (SH1106) - Primäre Benutzeroberfläche
+- BME280 Sensoren (innen/außen) - Kernfunktionalität
+- Relais - Lüftersteuerung
+- Encoder - Benutzerinteraktion
+
+### 1.2 Optionale Komponenten
+- SD-Karte - Datenspeicherung/Logging
+- RTC - Zeitstempel
+- Buzzer - Akustisches Feedback
+
+### 1.3 Boot-Sequenz (Erweitert)
+
+#### Pre-Boot Phase
+- Watchdog Timer Initialisierung (Systemschutz)
+- Grundlegende Systemprüfung
+  - CPU/Flash Test
+  - Spannungsüberprüfung
+  - Recovery-Mode Check (Hardware-Taster)
+
+#### Kritische Hardware (Phase 1)
+- Display-Initialisierung für Boot-Feedback
+- Buzzer für akustische Signale
+- Flash/EEPROM für Konfigurationszugriff
+
+#### Konfiguration (Phase 2)
+- Laden der Grundeinstellungen
+- Validierung der Konfiguration
+- Fallback auf sichere Defaults
+- Speichern der Boot-Historie
+
+#### Peripherie (Phase 3)
+- RTC mit Zeitsynchronisation
+- SD-Karte und Dateisystem
+- Encoder für Benutzereingaben
+- Relais-Testzyklus & Validierung
+
+#### Sensorsystem (Phase 4)
+- BME280 Initialisierung (innen/außen)
+- Sensor-Kalibrierungscheck
+- Erste Messreihe & Plausibilitätsprüfung
+- Sensorstatusvalidierung
+
+#### Systemfinalisierung (Phase 5)
+- Ressourcencheck (RAM, etc.)
+- Start der Monitoring-Dienste
+- Aktivierung der Regelungslogik
+- Übergang in den Normalbetrieb
+
+## 2. Steuerungslogik
+
+### 2.1 Übergeordnete Sicherheitslogik
+```
+Basis-Sicherheitsprüfungen (IMMER):
+Diese Checks laufen vor allen Modi:
+├── Frostschutz (Temp > 5°C)
+├── Taupunkt-Differenz positiv
+├── Außentemp < 35°C
+└── Sensoren funktionsfähig
+```
+
+### 2.2 Betriebsmodi und Prioritäten
+
+#### 1. Schimmelprävention (Kritischer Modus)
+```
+Aktivierungsbedingungen:
+├── Primär: Relative Luftfeuchtigkeit innen > 70% (Einschaltpunkt)
+└── Hysterese: 5% (Ausschaltpunkt bei 65%)
+
+Zusätzliche Sicherheit:
+├── Minimale Laufzeit: 10 Minuten
+├── Maximale Laufzeit: 60 Minuten
+└── Mindestpause: 5 Minuten
+
+Benutzer-Feedback:
+├── Display-Warnung
+├── Optionaler Buzzer-Alarm
+└── Status-LED (wenn vorhanden) rot
+```
+
+#### 2. Feuchteoptimierung (In Entwicklung)
+- Aktivierung bei moderaten Feuchtigkeitswerten
+- Arbeitet mit modusabhängigen Taupunktdifferenzen
+- Energieeffizienter Betrieb
+
+#### 3. Wartungslüftung (In Entwicklung)
+- Zeitbasierte Mindestlüftung
+- Sichert Grundlüftung wenn keine anderen Modi aktiv
+- Konfigurierbare Intervalle
+
+### 2.3 Geplante Erweiterungen
+- Spezialmodi (Weinkeller, Musikzimmer etc.)
+- Befeuchtungsmodus
+- Anwendungsprofile
+- Dynamische Hysterese
+
+## 3. Benutzeroberfläche
+
+### 3.1 Hauptscreens (Auto-Rotation)
+1. Temperatur & relative Luftfeuchte
+2. Taupunkte & absolute Luftfeuchte
+3. Statusscreen
+
+### 3.2 Menüstruktur
+- Einstellungen
+- Lüftersteuerung
+- System
+
+## 4. Datenspeicherung & Logging
+
+### 4.1 SD-Karte
+- Messwerte (CSV)
+- Ereignis-Logging
+- Konfigurationsspeicherung
+- Fehlerprotokoll
+
+### 4.2 Logging-Intervalle
+- Messwerte: 5 Minuten
+- Ereignisse: sofort
+- Tägliche Logrotation
+
+## TODO / Notizen
+
+### Hochprioritäre Punkte
+
+#### 1. Steuerungslogik
+- [x] Überarbeitung der Betriebszustände
+- [x] Feinabstimmung der Schwellwerte
+- [ ] Praxisnahe Szenarien durchspielen
+- [ ] Ergänzende Steuerungsparameter
+- [x] Sicherheitsmechanismen
+
+#### 2. Boot-Sequenz
+- [x] Exakte Reihenfolge der Hardware-Initialisierung
+- [x] Fehlerbehandlungsstrategien
+- [x] Fortschrittsberechnung
+- [x] Recovery-Optionen
+- [x] Watchdog-Integration
+
+#### 3. Benutzeroberfläche
+- [ ] Finales Screen-Layout
+- [ ] Menüstruktur im Detail
+- [ ] Encoder-Interaktionslogik
+- [ ] Timeout-Verhalten
+- [ ] Übergangsanimationen
+
+### Mittlere Priorität
+
+#### 4. Datenspeicherung
+- [ ] Logging-Struktur definieren
+- [ ] Dateiformat für Konfiguration
+- [ ] Backup-Strategie
+- [ ] Speichermanagement
+
+#### 5. Mehrsprachigkeit
+- [ ] String-Ressourcen System
+- [ ] Übersetzungsworkflow
+- [ ] Regionale Anpassungen
+- [ ] Formatierungsstandards
+
+#### 6. Statistik & Analyse
+- [ ] Relevante Metriken definieren
+- [ ] Berechnungsmethoden
+- [ ] Visualisierungsoptionen
+- [ ] Langzeitauswertung
+
+### Zukunftsplanung
+
+#### 7. Webinterface
+- [ ] Grundlegende Architektur
+- [ ] API-Design
+- [ ] Sicherheitskonzept
+- [ ] Responsive Layout
+
+#### 8. Erweiterungen
+- [ ] WLAN-Integration
+- [ ] Wetterdaten-Anbindung
+- [ ] GPS-Modul Evaluation
+- [ ] Machine Learning Möglichkeiten
+
+#### 9. Hardware-Optimierung
+- [ ] Energieverbrauch
+- [ ] Sensor-Kalibrierung
+- [ ] Zusätzliche Sensoren
+- [ ] Alternative Komponenten
+
+## Änderungshistorie:
+- V1: Initiale Version
+- V2: Überarbeitung Steuerungslogik, Hinzufügung der übergeordneten Sicherheitslogik und detaillierte Ausarbeitung des Schimmelprävention-Modus
+- V3: Umfassende Überarbeitung der Boot-Sequenz mit Watchdog Timer und detaillierteren Phasen, Aktualisierung der TODO-Liste
