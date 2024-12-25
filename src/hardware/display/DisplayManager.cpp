@@ -1,32 +1,28 @@
 #include "hardware/display/DisplayManager.h"
 
-// SH1106-Instanz (128x64, I2C, Reset-Pin -1)
-Adafruit_SH1106G DisplayManager::oled(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+Adafruit_SH1106G DisplayManager::display = Adafruit_SH1106G(128, 64, &Wire, -1);
 
-void DisplayManager::init() {
-    Serial.println("Initializing SH1106 display...");
-    if (!oled.begin(0x3C, true)) { // 0x3C ist die Standardadresse, true aktiviert I2C
-        Serial.println("SH1106 not found. Check wiring!");
-        for (;;); // Stoppe, wenn Initialisierung fehlschlägt
+void DisplayManager::init(uint8_t i2cAddress) {
+    if (!display.begin(i2cAddress, true)) {
+        Serial.println("Display konnte nicht initialisiert werden!");
+        for (;;); // Endlosschleife bei Fehler
     }
-    delay(100); // Wartezeit nach Initialisierung
-    clear();
-    oled.setTextSize(1);
-    oled.setTextColor(SH110X_WHITE);
-    Serial.println("SH1106 initialized successfully.");
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(SH110X_WHITE);
+    display.display();
+    Serial.println("Display erfolgreich initialisiert.");
 }
 
 void DisplayManager::clear() {
-    oled.clearDisplay();
+    display.clearDisplay();
 }
 
 void DisplayManager::printText(const char* text, int16_t x, int16_t y) {
-    oled.setCursor(x, y);
-    oled.print(text);
+    display.setCursor(x, y);
+    display.print(text);
 }
 
 void DisplayManager::show() {
-    oled.display();
+    display.display();
 }
-
-auto error = displayDriver.initialize(displayConfig);

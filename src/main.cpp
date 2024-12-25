@@ -5,15 +5,19 @@ Hardware::Display::SH1106Driver display;
 
 void setup() {
     Serial.begin(115200);
-    Serial.println("SH1106 Test");
 
-    if (display.initialize(0x3C)) {
-        display.clear();
-        display.drawString(0, 0, "Hello, SH1106!");
-        display.updateDisplay();
+    // Display initialisieren
+    Hardware::Display::DisplayConfig config = {0x3C}; // I2C-Adresse
+    if (!display.initialize(config)) {
+        Serial.println("Display konnte nicht initialisiert werden!");
+        while (1); // Endlosschleife bei Fehler
     }
+
+    // Testanzeige
+    display.drawString(0, 0, "Test erfolgreich!");
+    display.updateDisplay();
 }
 
 void loop() {
-    // Keine Logik
+    // Keine weitere Logik
 }
