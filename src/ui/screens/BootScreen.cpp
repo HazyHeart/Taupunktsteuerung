@@ -1,43 +1,41 @@
-// src/ui/screens/BootScreen.cpp
 #include "ui/screens/BootScreen.h"
-#include "hardware/display/DisplayDriver.h"
 
-namespace UI {
-namespace Screens {
+// Konstruktor
+BootScreen::BootScreen()
+    : startTime(0), duration(3000), progress(0) {} // 3 Sekunden Bootzeit
 
-BootScreen::BootScreen() {
-    // Screen-Initialisierung
+void BootScreen::init() {
+    startTime = millis(); // Startzeit speichern
+    progress = 0;         // Fortschritt zurücksetzen
+    DisplayManager::clear();
+    DisplayManager::printText("Booting...", 0, 0);
+    DisplayManager::show();
 }
 
-void BootScreen::setStatus(const String& status) {
-    currentStatus = status;
-    markDirty();
+void BootScreen::update() {
+    unsigned long elapsed = millis() - startTime;
+    progress = (elapsed * 100) / duration; // Fortschritt berechnen (0–100%)
+
+    if (progress > 100) progress = 100; // Maximalwert begrenzen
 }
 
-void BootScreen::setProgress(uint8_t progress) {
-    currentProgress = progress;
-    markDirty();
-}
+void BootScreen::render() {
+    DisplayManager::clear();
 
-void BootScreen::render(Hardware::Display::DisplayDriver& display) {
-    // Header mit Titel
-    display.drawString(20, 3, "TAUPUNKTREGLER");
-    display.drawLine(0, 12, 127, 12);
-    
-    // Status-Text
-    display.drawString(4, 24, currentStatus);
-    
-    // Progress Bar
-    display.drawRect(14, 48, 100, 8);
-    uint8_t fillWidth = currentProgress * 96 / 100;  // 96 = 100 - 4 Pixel Rand
-    if (fillWidth > 0) {
-        display.fillRect(16, 50, fillWidth, 4);
+    // Text anzeigen
+    DisplayManager::printText("Booting...", 0, 0);
+
+    // Fortschrittsbalken zeichnen (maximal 120 Pixel breit)
+    int barWidth = (progress * 120) / 100; // Maximal 120 Pixel Breite
+    if (barWidth > 120) barWidth = 120;   // Begrenzung
+
+    for (int i = 0; i < barWidth; i++) {
+        DisplayManager::printText("=", i, 10); // Balken zeichnen
     }
-    
-    // Prozentanzeige
-    char buf[8];
-    snprintf(buf, sizeof(buf), "%d%%", currentProgress);
-    display.drawString(116, 48, buf);
+
+    DisplayManager::show();
 }
 
-}} // namespace UI::Screens
+bool BootScreen::isDone() {
+    return (millis() - startTime) >= duration; // Ist der Bootprozess abgeschlossen?
+}

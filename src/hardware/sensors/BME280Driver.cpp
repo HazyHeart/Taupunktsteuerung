@@ -3,6 +3,9 @@
 #include "config/constants.h"
 #include <Arduino.h>
 #include <memory>
+#include <Adafruit_BME280.h>
+
+static Adafruit_BME280 bme;
 
 namespace Hardware {
 namespace Sensors {
@@ -134,6 +137,14 @@ bool BME280Driver::performSelfTest() {
     Serial.printf("- Luftdruck: %.0fhPa [%s]\n", pressure/100.0f, pressureOk ? "OK" : "FEHLER");
     
     return tempOk && humidityOk && pressureOk;
+}
+
+bool BME280Driver::init(uint8_t address) {
+    return bme.begin(address);
+}
+
+float BME280Driver::readTemperature() {
+    return bme.readTemperature();
 }
 
 }} // namespace Hardware::Sensors

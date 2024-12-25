@@ -26,6 +26,7 @@ public:
     BME280Driver(const String& loc, TwoWire& w);
     
     bool begin(uint8_t addr);
+    static float readTemperature();
     bool update();
     
     const SensorData& getData() const { return currentData; }

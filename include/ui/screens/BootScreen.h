@@ -1,24 +1,20 @@
-// ui/screens/BootScreen.h
-#pragma once
-#include "ScreenTemplate.h"
-#include "../widgets/Label.h"
-#include <memory>
+#ifndef BOOTSCREEN_H
+#define BOOTSCREEN_H
 
-namespace UI {
-namespace Screens {
+#include "../../hardware/display/DisplayManager.h"
 
-class BootScreen : public ScreenTemplate<BootScreen> {
+class BootScreen {
 public:
-    BootScreen();
-    
-    void setStatus(const String& status);
-    void setProgress(uint8_t progress);
-    
-    void render(Hardware::Display::DisplayDriver& display) override;
+    BootScreen(); // Konstruktor
+    void init();  // Initialisiert den Screen
+    void update(); // Logik-Update für Fortschrittsanzeige
+    void render(); // Darstellung auf dem Display
+    bool isDone(); // Prüft, ob der Bootprozess abgeschlossen ist
 
 private:
-    String currentStatus;
-    uint8_t currentProgress{0};
+    unsigned long startTime;   // Startzeit des BootScreens
+    unsigned long duration;   // Dauer des Bootvorgangs in Millisekunden
+    int progress;              // Fortschritt (0–100%)
 };
 
-}} // namespace UI::Screens
+#endif // BOOTSCREEN_H

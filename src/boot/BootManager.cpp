@@ -1,5 +1,12 @@
 #include "boot/BootManager.h"
 #include "hardware/display/DisplayManager.h"
+#include "ui/screens/BootScreen.h"
+#include "ui/screens/TemperatureScreen.h"
+
+BootScreen bootScreen;
+TemperatureScreen temperatureScreen; // Temperaturanzeige hinzufügen
+bool bootCompleted = false; // Zustand für Boot-Prozess
+unsigned long lastUpdate = 0; // Zeitstempel für Update
 
 void BootManager::init() {
     Serial.begin(115200);
@@ -7,11 +14,30 @@ void BootManager::init() {
 
     // Display initialisieren
     DisplayManager::init(0x3C);
+
+    // BootScreen initialisieren
+    bootScreen.init();
 }
 
 void BootManager::run() {
-    DisplayManager::clear();
-    DisplayManager::printText("Booting...", 0, 0);
-    DisplayManager::show();
-    delay(2000);
+    if (!bootCompleted) { // Boot-Prozess läuft noch
+        bootScreen.update();
+        bootScreen.render();
+
+        if (bootScreen.isDone()) {
+            Serial.println("Bootvorgang abgeschlossen!");
+            bootCompleted = true;
+
+            // Temperaturanzeige vorbereiten
+            temperatureScreen.init();
+        }
+    } else {
+        // Temperaturanzeige aktualisieren und rendern
+        unsigned long now = millis();
+        if (now - lastUpdate > 2000) { // Update alle 2 Sekunden
+            temperatureScreen.update();
+            lastUpdate = now;
+        }
+        temperatureScreen.render();
+    }
 }
