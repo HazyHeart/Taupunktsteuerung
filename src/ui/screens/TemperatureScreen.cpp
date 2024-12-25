@@ -1,11 +1,11 @@
 #include "ui/screens/TemperatureScreen.h"
-#include "hardware/sensors/BME280Driver.h" // Sicherstellen, dass der Pfad korrekt ist
+#include "hardware/sensors/BME280Driver.h"
 
 void TemperatureScreen::init() {
     // Initialisierung des BME280-Sensors
     if (!Hardware::Sensors::BME280Driver::init(0x76)) {
-        Serial.println("BME280 nicht gefunden!");
-        while (1); // Endlosschleife bei Fehler
+    Serial.println("BME280 nicht gefunden!");
+    while (1); // Endlosschleife bei Fehler
     }
 
     DisplayManager::clear();

@@ -2,6 +2,7 @@
 #include "hardware/display/DisplayManager.h"
 #include "ui/screens/BootScreen.h"
 #include "ui/screens/TemperatureScreen.h"
+#include "utils/I2CScanner.h"
 
 BootScreen bootScreen;
 TemperatureScreen temperatureScreen; // Temperaturanzeige hinzufügen
@@ -14,6 +15,9 @@ void BootManager::init() {
 
     // Display initialisieren
     DisplayManager::init(0x3C);
+    
+    // I2C-Scan aufrufen
+    I2CScanner::scan();
 
     // BootScreen initialisieren
     bootScreen.init();
