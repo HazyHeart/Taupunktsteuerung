@@ -11,6 +11,8 @@ public:
     static void clear();
     static void printText(const char* text, int16_t x, int16_t y);
     static void show();
+    static void drawRect(int x, int y, int width, int height);
+    static void fillRect(int x, int y, int width, int height);
 
 private:
     static Adafruit_SH1106G display; // Verwende fertigen Treiber

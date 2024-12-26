@@ -30,6 +30,7 @@ public:
     bool begin(uint8_t addr);
     static bool init(uint8_t address);
     static float readTemperature();
+    static float readHumidity();
     bool update();
     
     const SensorData& getData() const { return currentData; }
